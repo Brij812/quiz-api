@@ -1,99 +1,121 @@
-Quiz API 🎯
+# Quiz API 🎯
 
-A simple backend API for creating quizzes, adding questions, and submitting answers, built with Go + Chi.
+A simple backend API for creating quizzes, adding questions, and submitting answers — built with **Go + Chi**.
 
-🚀 Features
+---
 
-Create quizzes with titles
+## 🚀 Features
 
-Add questions with multiple options and a correct answer
+- Create quizzes with titles  
+- Add questions with multiple options and a correct answer  
+- Fetch quiz questions (**without revealing correct answers**)  
+- Submit answers and get a score  
+- JSON error responses for consistency  
+- Health check endpoint (`/health`)  
+- In-memory store (no database setup needed)  
+- Unit tests for core scoring logic  
 
-Fetch quiz questions (without revealing correct answers)
+---
 
-Submit answers and get a score
+## 🛠️ Tech Stack
 
-JSON error responses
+| Component   | Technology      |
+|-------------|-----------------|
+| Language    | Go 1.25+        |
+| Router      | [Chi](https://github.com/go-chi/chi) |
+| Persistence | In-memory maps  |
+| Testing     | `go test`       |
 
-Health check endpoint
+---
 
-In-memory store (easy to run, no DB setup)
+## ⚡ Getting Started
 
-Unit tests for scoring logic
-
-🛠️ Tech Stack
-
-Language: Go 1.25+
-
-Router: Chi
-
-Persistence: In-memory maps (future-ready for DB)
-
-Testing: go test
-
-⚡ Getting Started
-1. Clone & Setup
+### 1. Clone & Setup
+```bash
 git clone https://github.com/brij812/quiz-api.git
 cd quiz-api
 go mod tidy
+```
 
-2. Run the Server
+### 2. Run the Server
+```bash
 go run ./cmd/server
+```
 
-
-Server starts on:
-
+Server starts at:
+```
 http://localhost:8080
+```
 
-3. Run Tests
+### 3. Run Tests
+```bash
 go test ./...
+```
 
-📖 API Reference
-Health Check
+---
+
+## 📖 API Reference
+
+### 🔹 Health Check
+**Request**
+```http
 GET /health
-
-
-Response
-
+```
+**Response**
+```json
 { "status": "ok" }
+```
 
-Create Quiz
+---
+
+### 🔹 Create Quiz
+**Request**
+```http
 POST /quizzes/
+Content-Type: application/json
 
+{
+  "title": "Go Basics"
+}
+```
 
-Body
-
-{ "title": "Go Basics" }
-
-
-Response
-
+**Response**
+```json
 { "id": 1, "title": "Go Basics" }
+```
 
-List Quizzes
+---
+
+### 🔹 List Quizzes
+**Request**
+```http
 GET /quizzes/
+```
 
-
-Response
-
+**Response**
+```json
 [
   { "id": 1, "title": "Go Basics" }
 ]
+```
 
-Add Question
+---
+
+### 🔹 Add Question
+**Request**
+```http
 POST /quizzes/{quizID}/questions
-
-
-Body
+Content-Type: application/json
 
 {
   "text": "What is Go?",
   "options": ["Language", "Framework"],
   "correct_option_id": 1
 }
+```
 
-
-Response
-
+**Response**
+```json
 {
   "id": 1,
   "quiz_id": 1,
@@ -103,13 +125,18 @@ Response
     { "id": 2, "question_id": 1, "text": "Framework" }
   ]
 }
+```
 
-Get Quiz Questions
+---
+
+### 🔹 Get Quiz Questions
+**Request**
+```http
 GET /quizzes/{quizID}/questions
+```
 
-
-Response
-
+**Response**
+```json
 [
   {
     "id": 1,
@@ -121,39 +148,50 @@ Response
     ]
   }
 ]
+```
 
+✅ The correct answer is **hidden**.
 
-✅ Correct answer is hidden from response.
+---
 
-Submit Answers
+### 🔹 Submit Answers
+**Request**
+```http
 POST /quizzes/{quizID}/submit
-
-
-Body
+Content-Type: application/json
 
 {
   "answers": [
     { "question_id": 1, "option_id": 1 }
   ]
 }
+```
 
-
-Response
-
+**Response**
+```json
 { "score": 1, "total": 1 }
+```
 
-🔥 Error Responses
+---
 
-All errors return JSON format with status code:
+## 🔥 Error Handling
 
+All errors return JSON format with proper status codes:
+```json
 { "error": "quiz not found" }
+```
 
-🧩 Future Improvements
+---
 
-Swap in-memory store with SQLite/Postgres
+## 🧩 Future Improvements
 
-Support multiple question types (single choice, multiple choice, text with word limits)
+- Replace in-memory store with SQLite/Postgres  
+- Support multiple question types (single-choice, multiple-choice, text with word limits)  
+- Add authentication for quiz creators  
+- Swagger/OpenAPI documentation  
 
-Add authentication for quiz creators
+---
 
-Swagger/OpenAPI documentation
+## 📜 License
+
+This project is released under the [MIT License](LICENSE).
